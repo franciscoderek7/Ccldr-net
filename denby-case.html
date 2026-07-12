@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Francisco v. Denby — Live Case Tracker | CCLDR — Doc Weedlaw</title>
+<meta name="description" content="Live case tracking: Derek Francisco (Doc Weedlaw) v. Bill Denby, Gwen Denby & 2413319 Ontario Inc. CPL Motion — July 14, 2026. Follow the fight in real time.">
+<style>
+:root {
+  --bg: #0A0A0A;
+  --bg2: #121212;
+  --card: #181818;
+  --gold: #D4AF37;
+  --gold2: #F0CB5A;
+  --green: #00C864;
+  --red: #CC2222;
+  --amber: #FF9900;
+  --text: #EEEEEE;
+  --muted: #999999;
+  --border: rgba(212,175,55,0.15);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.7;overflow-x:hidden;}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 5%;}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.nav-brand{font-size:1.1rem;font-weight:900;color:var(--gold);text-decoration:none;letter-spacing:0.08em;}
+.nav-back{font-size:0.88rem;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--gold);}
+
+.hero{background:linear-gradient(135deg,#0A0A0A,#130E00);border-bottom:1px solid var(--border);padding:70px 5% 60px;}
+.hero-inner{max-width:900px;margin:0 auto;}
+.hero-badge{display:inline-block;background:rgba(204,34,34,0.15);border:1px solid rgba(204,34,34,0.3);color:#FF5555;font-size:0.72rem;font-weight:700;letter-spacing:0.2em;padding:4px 14px;border-radius:2px;text-transform:uppercase;margin-bottom:20px;}
+.hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:8px;line-height:1.15;}
+.hero h1 span{color:var(--gold);}
+.case-parties{font-size:1rem;color:var(--muted);margin-bottom:24px;font-style:italic;}
+.case-summary{font-size:0.95rem;color:var(--text);max-width:700px;line-height:1.8;margin-bottom:32px;}
+.status-row{display:flex;gap:12px;flex-wrap:wrap;}
+.status-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:700;letter-spacing:0.06em;}
+.chip-live{background:rgba(0,200,100,0.12);border:1px solid rgba(0,200,100,0.3);color:var(--green);}
+.chip-amber{background:rgba(255,153,0,0.12);border:1px solid rgba(255,153,0,0.3);color:var(--amber);}
+.chip-date{background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.2);color:var(--gold);}
+.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse-g 2s infinite;}
+@keyframes pulse-g{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.5)}}
+
+section{padding:70px 5%;max-width:100%;}
+.inner{max-width:1100px;margin:0 auto;}
+.section-label{font-size:0.72rem;letter-spacing:0.25em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.section-title{font-size:1.8rem;font-weight:800;margin-bottom:0.5rem;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0;}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;margin-top:36px;position:relative;}
+.timeline::before{content:'';position:absolute;left:22px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--gold),rgba(212,175,55,0.1));}
+.tl-item{display:flex;gap:24px;align-items:flex-start;padding:0 0 36px 0;}
+.tl-dot{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;position:relative;z-index:1;}
+.tl-dot.done{background:rgba(0,200,100,0.15);border:2px solid rgba(0,200,100,0.4);}
+.tl-dot.active{background:rgba(212,175,55,0.2);border:2px solid var(--gold);animation:tl-pulse 2s ease-in-out infinite;}
+.tl-dot.upcoming{background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.1);}
+.tl-dot.critical{background:rgba(204,34,34,0.15);border:2px solid rgba(204,34,34,0.4);}
+@keyframes tl-pulse{0%,100%{box-shadow:0 0 0 0 rgba(212,175,55,0.3)}50%{box-shadow:0 0 0 8px rgba(212,175,55,0)}}
+.tl-content{flex:1;padding-top:8px;}
+.tl-date{font-size:0.75rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;}
+.tl-title{font-size:1.05rem;font-weight:700;margin-bottom:6px;}
+.tl-desc{font-size:0.88rem;color:var(--muted);line-height:1.6;}
+.tl-tag{display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:2px 8px;border-radius:2px;margin-left:8px;vertical-align:middle;}
+.tag-done{background:rgba(0,200,100,0.12);color:var(--green);border:1px solid rgba(0,200,100,0.25);}
+.tag-active{background:rgba(212,175,55,0.15);color:var(--gold);}
+.tag-critical{background:rgba(204,34,34,0.12);color:#FF5555;}
+.tag-upcoming{background:rgba(255,255,255,0.06);color:var(--muted);}
+
+/* CHARGES */
+.charges-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:28px;}
+.charge-card{background:var(--card);border:1px solid var(--border);padding:20px;border-radius:4px;}
+.charge-num{font-size:0.7rem;font-weight:700;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+.charge-name{font-size:1rem;font-weight:700;margin-bottom:4px;}
+.charge-desc{font-size:0.85rem;color:var(--muted);line-height:1.5;}
+
+/* DEMANDS */
+.demands-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:24px;}
+.demands-list li{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:4px;font-size:0.9rem;}
+.demands-list li::before{content:'→';color:var(--gold);font-weight:700;flex-shrink:0;margin-top:1px;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-top:28px;}
+.stat-box{background:var(--card);padding:24px 16px;text-align:center;}
+.stat-num{font-size:2.2rem;font-weight:900;color:var(--gold);line-height:1;}
+.stat-label{font-size:0.75rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px;}
+
+/* DOCS TABLE */
+.docs-table{width:100%;border-collapse:collapse;margin-top:24px;font-size:0.9rem;}
+.docs-table th{background:rgba(212,175,55,0.08);color:var(--gold);padding:10px 14px;text-align:left;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;border-bottom:1px solid var(--border);}
+.docs-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--text);}
+.docs-table tr:hover td{background:rgba(212,175,55,0.03);}
+.doc-status-filed{color:var(--green);font-weight:700;font-size:0.82rem;}
+.doc-status-pending{color:var(--amber);font-weight:700;font-size:0.82rem;}
+.doc-status-needed{color:#FF5555;font-weight:700;font-size:0.82rem;}
+
+/* FOLLOW BOX */
+.follow-box{background:linear-gradient(135deg,rgba(212,175,55,0.06),rgba(212,175,55,0.02));border:1px solid var(--border);border-radius:4px;padding:32px;text-align:center;margin-top:40px;}
+.follow-box h3{font-size:1.3rem;font-weight:800;color:var(--gold);margin-bottom:8px;}
+.follow-box p{font-size:0.9rem;color:var(--muted);max-width:560px;margin:0 auto 20px;}
+.follow-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-gold{background:var(--gold);color:#000;padding:10px 24px;font-weight:800;font-size:0.88rem;text-decoration:none;border-radius:2px;transition:background 0.2s;}
+.btn-gold:hover{background:var(--gold2);}
+.btn-outline{border:1px solid var(--gold);color:var(--gold);padding:10px 24px;font-weight:700;font-size:0.88rem;text-decoration:none;border-radius:2px;transition:all 0.2s;}
+.btn-outline:hover{background:rgba(212,175,55,0.08);}
+
+/* PAYWALL */
+.pw-gate{position:relative;}
+.pw-gate.pw-locked .pw-gate-body{filter:blur(5px);user-select:none;pointer-events:none;max-height:280px;overflow:hidden;}
+.pw-gate:not(.pw-locked) .pw-gate-overlay{display:none;}
+.pw-gate-overlay{position:absolute;left:0;right:0;bottom:0;top:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(180deg,rgba(10,10,10,0.05),rgba(10,10,10,0.96) 45%);text-align:center;padding:24px;z-index:5;}
+.pw-lock-icon{font-size:1.8rem;}
+.pw-overlay-text{font-size:0.92rem;color:var(--text);max-width:420px;}
+.pw-overlay-text strong{color:var(--gold);}
+.pw-unlock-form{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.pw-unlock-form input{background:#000;border:1px solid var(--border);color:var(--text);padding:9px 14px;border-radius:4px;font-size:0.85rem;min-width:200px;}
+.pw-unlock-form button{background:var(--gold);color:#000;border:none;padding:9px 18px;border-radius:4px;font-weight:700;cursor:pointer;font-size:0.85rem;}
+.pw-msg{font-size:0.8rem;min-height:1em;}
+.pw-status-banner{display:none;background:rgba(0,200,100,0.1);border:1px solid rgba(0,200,100,0.3);color:var(--green);padding:8px 16px;border-radius:4px;font-size:0.82rem;font-weight:700;text-align:center;margin-bottom:16px;}
+.pw-logout{display:none;font-size:0.75rem;color:var(--muted);text-decoration:underline;cursor:pointer;background:none;border:none;margin-top:10px;}
+
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:32px 5%;text-align:center;}
+.footer-text{font-size:0.78rem;color:var(--muted);}
+.footer-text a{color:var(--gold);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">CCLDR · Doc Weedlaw</a>
+    <a href="cases.html" class="nav-back">← All Active Cases</a>
+    <a href="cases.html#pricing" class="nav-back" style="color:var(--gold);">Subscribe — $49/mo →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🔴 LIVE LITIGATION — Ontario Superior Court</div>
+    <h1>Francisco v. <span>Denby</span></h1>
+    <div class="case-parties">Derek Francisco (Doc Weedlaw) v. Bill Denby, Gwen Denby &amp; 2413319 Ontario Inc.</div>
+    <p style="font-size:0.82rem;color:var(--muted);max-width:700px;margin-bottom:16px;font-family:monospace;">
+      Court File No. <strong style="color:var(--gold);">CV-26-00000064-0000</strong> — Ontario Superior Court of Justice (Eastern Region)
+    </p>
+    <p class="case-summary">
+      A civil fraud, trespass, and defamation case (6 counts) currently before the Ontario Superior Court of Justice,
+      Eastern Region. Derek Francisco is pursuing civil remedies against the Denby defendants for a pattern of
+      conduct including property fraud, harassment, criminal mischief, and defamation. This page tracks the case
+      status publicly — because transparency is the cornerstone of justice.
+    </p>
+    <p style="font-size:0.85rem;color:var(--muted);max-width:700px;margin-bottom:24px;">
+      <strong style="color:var(--gold);">Derek Francisco (Doc Weedlaw)</strong> — 20+ years of constitutional litigation experience, self-represented in Ontario Superior Court.
+    </p>
+    <div style="margin-bottom:24px;">
+      <a href="cases.html#pricing" class="btn-gold">🔓 Subscribe — $49/month for full case access</a>
+    </div>
+    <div class="status-row">
+      <span class="status-chip chip-live"><span class="live-dot"></span> ACTIVE — CPL MOTION</span>
+      <span class="status-chip chip-date">⚖ Next Hearing: July 14, 2026, 9:30 AM — Lindsay</span>
+      <span class="status-chip chip-amber">⏳ 18 Days to Hearing</span>
+    </div>
+    <!-- COUNTDOWN -->
+    <div style="margin-top:28px;background:rgba(212,175,55,0.05);border:1px solid rgba(212,175,55,0.2);border-radius:4px;padding:20px 24px;display:inline-flex;align-items:center;gap:24px;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;">CPL Motion Countdown</div>
+        <div style="font-size:0.82rem;font-weight:700;color:var(--gold);">July 14, 2026, 9:30 AM — Lindsay, Ontario Superior Court</div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <div style="text-align:center;"><div style="font-size:2rem;font-weight:900;color:var(--text);font-variant-numeric:tabular-nums;" id="dc-days">18</div><div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);">Days</div></div>
+        <div style="font-size:1.5rem;color:var(--border);margin-bottom:10px;">:</div>
+        <div style="text-align:center;"><div style="font-size:2rem;font-weight:900;color:var(--text);font-variant-numeric:tabular-nums;" id="dc-hours">00</div><div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);">Hours</div></div>
+        <div style="font-size:1.5rem;color:var(--border);margin-bottom:10px;">:</div>
+        <div style="text-align:center;"><div style="font-size:2rem;font-weight:900;color:var(--text);font-variant-numeric:tabular-nums;" id="dc-mins">00</div><div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);">Mins</div></div>
+        <div style="font-size:1.5rem;color:var(--border);margin-bottom:10px;">:</div>
+        <div style="text-align:center;"><div style="font-size:2rem;font-weight:900;color:var(--text);font-variant-numeric:tabular-nums;" id="dc-secs">00</div><div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);">Secs</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- STATS -->
+<section style="padding:50px 5%;">
+  <div class="inner">
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Criminal Counts Sworn</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Civil Defendants</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">2</div>
+        <div class="stat-label">Cases Running Parallel</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">$</div>
+        <div class="stat-label">Damages Sought</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">CPL</div>
+        <div class="stat-label">Property Lock Requested</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TIMELINE -->
+<section style="background:var(--bg2);">
+  <div class="inner">
+    <div class="section-label">Case History</div>
+    <h2 class="section-title">Timeline</h2>
+    <div class="pw-gate" data-paywall="basic">
+    <div class="pw-gate-body">
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot done">📁</div>
+        <div class="tl-content">
+          <div class="tl-date">Earlier 2026</div>
+          <div class="tl-title">Statement of Claim Filed <span class="tl-tag tag-done">✓ Done</span></div>
+          <div class="tl-desc">Original Statement of Claim filed against the Denby defendants in Ontario Superior Court. Served on defendants.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">📋</div>
+        <div class="tl-content">
+          <div class="tl-date">Prior to June 2026</div>
+          <div class="tl-title">Default Proceedings Initiated <span class="tl-tag tag-done">✓ Filed</span></div>
+          <div class="tl-desc">Form 19A Default documents prepared for both Bill Denby personally and 2413319 Ontario Inc. after defendants failed to file a defence.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">🏢</div>
+        <div class="tl-content">
+          <div class="tl-date">June 8, 2026</div>
+          <div class="tl-title">2413319 Ontario Inc. ONBIS Profile Obtained <span class="tl-tag tag-done">✓ Done</span></div>
+          <div class="tl-desc">Corporate profile obtained confirming directors and registration. Added to exhibit package for affidavit.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">⚠</div>
+        <div class="tl-content">
+          <div class="tl-date">June 3, 2026</div>
+          <div class="tl-title">Silver Spray Paint Incident Documented <span class="tl-tag tag-done">✓ Evidence Secured</span></div>
+          <div class="tl-desc">Silver spray paint vandalism discovered at property. Photos and video secured. Witness Dylan present. Four-wheeler incident observed.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">📋</div>
+        <div class="tl-content">
+          <div class="tl-date">June 11, 2026</div>
+          <div class="tl-title">Court Appearance — Documents Filed <span class="tl-tag tag-done">✓ Complete</span></div>
+          <div class="tl-desc">Amended Statement of Claim, motion materials, Form 19A default documents for Bill Denby and 2413319 Ontario Inc. filed with Ontario Superior Court. Full document package submitted.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot done">📋</div>
+        <div class="tl-content">
+          <div class="tl-date">June 26, 2026</div>
+          <div class="tl-title">Information Sworn — 6 Criminal Counts <span class="tl-tag tag-done">✓ Sworn</span></div>
+          <div class="tl-desc">Information (6 Counts, HMK v. Denby) sworn before a Justice of the Peace. Scheduled for today; likely a third remand due to bail-hearing backlog. Criminal proceedings run parallel to, and are tracked separately from, the civil case in Ontario Superior Court.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot active">🚨</div>
+        <div class="tl-content">
+          <div class="tl-date">July 14, 2026, 9:30 AM — NEXT HEARING (Lindsay)</div>
+          <div class="tl-title">CPL Motion — Certificate of Pending Litigation <span class="tl-tag tag-critical">⏳ 18 Days</span></div>
+          <div class="tl-desc">Certificate of Pending Litigation motion to lock 27 O'Reilly Lane against any transfer, sale, or encumbrance until the case is resolved, and to amend the Statement of Claim to add 2413319 Ontario Inc. as a defendant, increase damages claimed to $3,300,000, and remove Gregory P. Wade as a named party. Default judgment proceedings against Bill Denby and 2413319 Ontario Inc. This is the critical hearing — property protection hinges on this outcome.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot upcoming">⚖</div>
+        <div class="tl-content">
+          <div class="tl-date">After July 14 — TBD</div>
+          <div class="tl-title">Default Judgment Enforcement <span class="tl-tag tag-upcoming">Upcoming</span></div>
+          <div class="tl-desc">Following CPL and default judgment: enforcement of judgment against both defendants personally and corporately. Damages assessment and recovery proceedings.</div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="pw-gate-overlay">
+      <div class="pw-lock-icon">🔒</div>
+      <div class="pw-overlay-text">This content is for <strong>subscribers only</strong>. Subscribe for $49/month to unlock full case details, strategy commentary, documents, and live updates.</div>
+      <a href="cases.html#pricing" class="btn-gold">Subscribe — $49/mo</a>
+    </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CRIMINAL COUNTS -->
+<section>
+  <div class="inner">
+    <div class="section-label">Criminal Proceedings</div>
+    <h2 class="section-title">6 Criminal Counts — HMK v. Denby</h2>
+    <p style="color:var(--muted);font-size:0.9rem;max-width:700px;margin-bottom:0;line-height:1.7;">
+      A private information containing 6 criminal counts has been sworn before a Justice of the Peace (June 26, 2026).
+      These proceedings run parallel to, and separately from, the civil case. <em style="color:var(--gold);">No trespassing charge has been laid against Bill Denby.</em>
+    </p>
+    <div class="pw-gate" data-paywall="basic">
+    <div class="pw-gate-body">
+    <div class="charges-grid">
+      <div class="charge-card">
+        <div class="charge-num">Category A</div>
+        <div class="charge-name">Property Offences</div>
+        <div class="charge-desc">Counts related to unauthorized interference with property rights contrary to the Criminal Code of Canada.</div>
+      </div>
+      <div class="charge-card">
+        <div class="charge-num">Category B</div>
+        <div class="charge-name">Criminal Mischief</div>
+        <div class="charge-desc">Damage to property including the June 3 spray paint vandalism incident. Evidence: photographs, video, and witness affidavits.</div>
+      </div>
+      <div class="charge-card">
+        <div class="charge-num">Category C</div>
+        <div class="charge-name">Intimidation &amp; Harassment</div>
+        <div class="charge-desc">Pattern of conduct designed to intimidate and harass Derek Francisco and witnesses, including the four-wheeler incident.</div>
+      </div>
+      <div class="charge-card">
+        <div class="charge-num">Category D</div>
+        <div class="charge-name">Defamation &amp; False Statements</div>
+        <div class="charge-desc">Written defamatory statements made by Bill Denby against Derek Francisco and Dylan. Documented in email correspondence.</div>
+      </div>
+    </div>
+    </div>
+    <div class="pw-gate-overlay">
+      <div class="pw-lock-icon">🔒</div>
+      <div class="pw-overlay-text">This content is for <strong>subscribers only</strong>. Subscribe for $49/month to unlock full case details, strategy commentary, documents, and live updates.</div>
+      <a href="cases.html#pricing" class="btn-gold">Subscribe — $49/mo</a>
+    </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CIVIL CLAIMS / DEMANDS -->
+<section style="background:var(--bg2);">
+  <div class="inner">
+    <div class="section-label">Civil Action</div>
+    <h2 class="section-title">What Derek Is Seeking</h2>
+    <div class="pw-gate" data-paywall="basic">
+    <div class="pw-gate-body">
+    <ul class="demands-list">
+      <li><strong>Certificate of Pending Litigation (CPL)</strong> — Locks 27 O'Reilly Lane against transfer, sale, or encumbrance until the case is resolved</li>
+      <li><strong>Default Judgment — Bill Denby (Personal)</strong> — Currently $1,000,000 default judgment against Bill Denby personally for failure to file a defence</li>
+      <li><strong>Default Judgment — 2413319 Ontario Inc.</strong> — Corporate judgment against the numbered company</li>
+      <li><strong>Motion to Amend</strong> — Adds 2413319 Ontario Inc. as a named defendant, increases total damages claimed from $1,000,000 to $3,300,000, and removes Gregory P. Wade as a party</li>
+      <li><strong>Damages</strong> — Civil fraud, trespass, and defamation — 6 counts — compensation for property interference, defamation, harassment, and financial losses</li>
+      <li><strong>Injunction</strong> — Court order prohibiting the defendants from any further interference with Derek Francisco or his property</li>
+      <li><strong>Costs</strong> — Recovery of legal costs and disbursements from the defendants</li>
+    </ul>
+    </div>
+    <div class="pw-gate-overlay">
+      <div class="pw-lock-icon">🔒</div>
+      <div class="pw-overlay-text">This content is for <strong>subscribers only</strong>. Subscribe for $49/month to unlock full case details, strategy commentary, documents, and live updates.</div>
+      <a href="cases.html#pricing" class="btn-gold">Subscribe — $49/mo</a>
+    </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DOCUMENTS -->
+<section>
+  <div class="inner">
+    <div class="section-label">Court Documents</div>
+    <h2 class="section-title">Filed &amp; Pending Documents</h2>
+    <div class="pw-gate" data-paywall="basic">
+    <div class="pw-gate-body">
+    <table class="docs-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Document</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Amended Statement of Claim</td><td class="doc-status-filed">✓ Ready to File</td><td>Adds 2413319 Ontario Inc.</td></tr>
+        <tr><td>2</td><td>Form 19A — Bill Denby Default</td><td class="doc-status-filed">✓ Ready to File</td><td>Personal default</td></tr>
+        <tr><td>3</td><td>Form 19A — 2413319 Default</td><td class="doc-status-filed">✓ Ready to File</td><td>Corporate default</td></tr>
+        <tr><td>4</td><td>Notice of Motion</td><td class="doc-status-filed">✓ Ready</td><td>June 11 motion</td></tr>
+        <tr><td>5</td><td>Factum</td><td class="doc-status-filed">✓ Ready</td><td>Legal arguments</td></tr>
+        <tr><td>6</td><td>Derek Francisco Affidavit</td><td class="doc-status-filed">✓ Ready — Swear Before Holly</td><td>Must be sworn today/tomorrow</td></tr>
+        <tr><td>7</td><td>Pamela Shorey Supplementary Affidavit</td><td class="doc-status-filed">✓ Ready</td><td>Supporting witness</td></tr>
+        <tr><td>8</td><td>Draft Order</td><td class="doc-status-filed">✓ Ready</td><td>Proposed judge's order</td></tr>
+        <tr><td>9</td><td>Dylan Affidavit</td><td class="doc-status-needed">⚠ Building Now</td><td>5 questions to answer first</td></tr>
+        <tr><td>10</td><td>Trial Coordinator Email</td><td class="doc-status-filed">✓ Ready</td><td>Communication record</td></tr>
+        <tr><td>11</td><td>Information — 6 Counts HMK v. Denby</td><td class="doc-status-filed">✓ Sworn June 26, 2026</td><td>Criminal proceedings — likely 3rd remand</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="pw-gate-overlay">
+      <div class="pw-lock-icon">🔒</div>
+      <div class="pw-overlay-text">This content is for <strong>subscribers only</strong>. Subscribe for $49/month to unlock full case details, strategy commentary, documents, and live updates.</div>
+      <a href="cases.html#pricing" class="btn-gold">Subscribe — $49/mo</a>
+    </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DONATION -->
+<section style="background:var(--bg2);" id="donate">
+  <div class="inner">
+    <div class="section-label">Support the Fight</div>
+    <h2 class="section-title" style="margin-bottom:0;">Help Win the July 14 CPL Motion</h2>
+    <div class="follow-box" style="text-align:left;padding:36px;">
+      <h3 style="color:var(--gold);font-size:1.3rem;margin-bottom:8px;">⚖ Support Doc Weedlaw's Fight</h3>
+      <p style="margin-bottom:24px;">Derek Francisco is fighting this case self-represented — every motion, every hearing, every filing. Your support funds court fees, process servers, and keeps the property fight alive ahead of the July 14 CPL Motion.</p>
+
+      <!-- Progress Bar -->
+      <div style="background:rgba(255,255,255,0.05);border-radius:100px;height:8px;margin-bottom:6px;overflow:hidden;border:1px solid rgba(212,175,55,0.15);">
+        <div style="width:23%;height:100%;background:linear-gradient(90deg,var(--gold),#F0CB5A);border-radius:100px;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:28px;">
+        <span>Raised: <strong style="color:var(--gold);">$2,300</strong></span>
+        <span>Goal: <strong style="color:var(--gold);">$10,000 for CPL Motion</strong></span>
+      </div>
+
+      <!-- Tiers -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+        <a href="https://paypal.me/techpetcage/25CAD" style="background:var(--card);border:1px solid var(--border);padding:10px 18px;border-radius:20px;font-weight:700;text-decoration:none;color:var(--text);font-size:0.85rem;transition:all 0.2s;" target="_blank" rel="noopener" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='';this.style.color=''">$25</a>
+        <a href="https://paypal.me/techpetcage/50CAD" style="background:var(--card);border:1px solid var(--border);padding:10px 18px;border-radius:20px;font-weight:700;text-decoration:none;color:var(--text);font-size:0.85rem;" target="_blank" rel="noopener">$50</a>
+        <a href="https://paypal.me/techpetcage/100CAD" style="background:var(--card);border:1px solid var(--border);padding:10px 18px;border-radius:20px;font-weight:700;text-decoration:none;color:var(--text);font-size:0.85rem;" target="_blank" rel="noopener">$100</a>
+        <a href="https://paypal.me/techpetcage/250CAD" style="background:var(--card);border:1px solid var(--border);padding:10px 18px;border-radius:20px;font-weight:700;text-decoration:none;color:var(--text);font-size:0.85rem;" target="_blank" rel="noopener">$250</a>
+        <a href="https://paypal.me/techpetcage/500CAD" style="background:var(--card);border:1px solid var(--border);padding:10px 18px;border-radius:20px;font-weight:700;text-decoration:none;color:var(--text);font-size:0.85rem;" target="_blank" rel="noopener">$500</a>
+        <a href="https://paypal.me/techpetcage/1000CAD" style="background:var(--card);border:1px solid var(--border);padding:10px 18px;border-radius:20px;font-weight:700;text-decoration:none;color:var(--text);font-size:0.85rem;" target="_blank" rel="noopener">$1,000</a>
+      </div>
+
+      <div class="follow-btns" style="justify-content:flex-start;margin-bottom:20px;">
+        <a href="https://www.paypal.com/paypalme/techpetcage?country.x=CA&locale.x=en_CA" class="btn-gold" target="_blank" rel="noopener">💳 PayPal — paypal.me/techpetcage</a>
+        <a href="mailto:franciscoderek7@gmail.com?subject=Interac%20e-Transfer%20—%20Denby%20Case%20Support" class="btn-outline" target="_blank" rel="noopener">🏦 Interac e-Transfer</a>
+      </div>
+
+      <!-- BTC -->
+      <div style="background:rgba(0,0,0,0.5);border:1px solid var(--border);border-radius:4px;padding:14px 16px;font-family:monospace;font-size:0.78rem;color:var(--muted);word-break:break-all;position:relative;margin-bottom:8px;">
+        <strong style="color:var(--gold);display:block;margin-bottom:5px;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;font-family:sans-serif;">₿ Bitcoin (BTC)</strong>
+        bc1qqdjsf6senn899jmrav2x6hd32q94ma5ukh6z4x
+        <button onclick="navigator.clipboard.writeText('bc1qqdjsf6senn899jmrav2x6hd32q94ma5ukh6z4x').then(function(){var b=event.target;b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},2000)})" style="position:absolute;top:12px;right:12px;background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.25);color:var(--gold);font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:2px;cursor:pointer;">Copy</button>
+      </div>
+      <p style="font-size:0.75rem;color:var(--muted);line-height:1.7;">All donations fund Derek Francisco's court costs directly. Questions: <strong>franciscoderek7@gmail.com</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- FOLLOW -->
+<section>
+  <div class="inner">
+    <div class="section-label">Follow This Case</div>
+    <h2 class="section-title" style="margin-bottom:0;">Stay Updated</h2>
+    <div class="follow-box">
+      <h3>Francisco v. Denby + Francisco v. AG</h3>
+      <p>This page is updated as the case progresses. Derek Francisco is pursuing civil, criminal, and constitutional remedies simultaneously. Follow CCLDR for updates as hearings occur and judgments are issued.</p>
+      <div class="follow-btns">
+        <a href="mailto:franciscoderek7@gmail.com?subject=Case%20Updates%20Request%20%E2%80%94%20Francisco%20v.%20Denby" class="btn-gold">Get Case Updates</a>
+        <a href="ag-case.html" class="btn-outline">→ Francisco v. AG ($35M)</a>
+        <a href="cases.html" class="btn-outline">All Active Cases</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBSCRIBER COMMENTS -->
+<section style="background:var(--bg2);">
+  <div class="inner">
+    <div class="section-label">Subscriber Discussion</div>
+    <h2 class="section-title" style="font-size:1.8rem;">Comments</h2>
+    <div class="pw-gate" data-paywall="basic">
+      <div class="pw-gate-body">
+        <form onsubmit="return pwPostComment('denby', this)" style="margin-bottom:20px;">
+          <textarea name="comment" rows="3" placeholder="Share a question or note for other subscribers…" style="width:100%;background:#000;border:1px solid var(--border);color:var(--text);padding:12px;border-radius:4px;font-size:0.88rem;font-family:inherit;" required></textarea>
+          <button type="submit" class="btn-gold" style="margin-top:10px;border:none;cursor:pointer;">Post Comment</button>
+        </form>
+        <div id="pw-comments-denby"></div>
+      </div>
+      <div class="pw-gate-overlay">
+        <div class="pw-lock-icon">🔒</div>
+        <div class="pw-overlay-text"><strong>Subscriber comments are locked.</strong> Subscribe to ask Derek questions and discuss the cases with other followers.</div>
+        <a href="cases.html#pricing" class="btn-gold">Subscribe — $49/mo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-text">
+    <strong style="color:var(--gold);">CCLDR — Cannabis Civil Liberties &amp; Defense Rights</strong> &nbsp;·&nbsp;
+    Doc Weedlaw &nbsp;·&nbsp;
+    <a href="index.html">Home</a> &nbsp;·&nbsp;
+    Case information is public and factual record. &nbsp;·&nbsp;
+    <a href="cases.html" style="color:var(--gold);">All Active Cases</a>
+    &nbsp;·&nbsp; <a href="cibc-case.html" style="color:var(--gold);">Francisco v. CIBC</a>
+    &nbsp;·&nbsp; Last updated: June 26, 2026
+  </div>
+</footer>
+<div style="background:#0d0d14;border-top:2px solid #d4af37;padding:20px 24px;text-align:center;font-size:12px;color:#8892a4;line-height:1.8;"><strong style="color:#d4af37;display:block;margin-bottom:8px;font-size:13px;letter-spacing:1px;text-transform:uppercase;">⚖️ Educational Content Only — Not Legal Advice</strong>Derek Francisco is a <strong style="color:#c8d0dc">legal educator and constitutional advocate</strong>, not a licensed lawyer. All content on this site is based on <strong style="color:#c8d0dc">20+ years of personal litigation experience</strong> and constitutional research, provided for <strong style="color:#c8d0dc">educational purposes only</strong>. No lawyer-client relationship is created by use of this site. Case information on this page is factual public record. For legal representation in your matter, please consult a <strong style="color:#c8d0dc">licensed attorney in your jurisdiction</strong>.</div>
+
+<script>
+var target = new Date('2026-07-14T13:30:00Z');
+function tick(){
+  var now = new Date(), diff = target - now;
+  if(diff <= 0){ return; }
+  var d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+  document.getElementById('dc-days').textContent=d;
+  document.getElementById('dc-hours').textContent=String(h).padStart(2,'0');
+  document.getElementById('dc-mins').textContent=String(m).padStart(2,'0');
+  document.getElementById('dc-secs').textContent=String(s).padStart(2,'0');
+}
+tick(); setInterval(tick,1000);
+</script>
+
+<script src="case-paywall.js"></script>
+<script>document.addEventListener('DOMContentLoaded', function(){ pwRenderComments('denby'); });</script>
+
+</body>
+</html>
